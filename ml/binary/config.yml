@@ -1,0 +1,25 @@
+data:
+  train_csv: "C:/Users/ASUS/PycharmProjects/Wedakam/data/processed/(11)binary_train.csv"
+  val_csv: "C:/Users/ASUS/PycharmProjects/Wedakam/data/processed/(12)binary_val.csv"
+  image_root: "C:/Users/ASUS/PycharmProjects/Wedakam/data/raw"
+  image_col: "Image Index"
+  label_col: "Binary_Label"
+
+model:
+  name: "densenet121"
+  pretrained: true
+
+training:
+  image_size: 224
+  batch_size: 16
+  epochs: 5
+  lr: 0.0001
+  num_workers: 4
+  device: "cuda"
+  seed: 42
+
+output:
+  dir: "C:/Users/ASUS/PycharmProjects/Wedakam/ml/binary/binary_output"
+  best_model_name: "best_model.pt"
+  last_model_name: "last_model.pt"
+  metrics_name: "metrics.csv"
