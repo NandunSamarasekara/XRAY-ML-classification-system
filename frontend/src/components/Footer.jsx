@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import '../App.css';
 
 const Footer = () => {
@@ -9,7 +8,7 @@ const Footer = () => {
             <div className="cta-box">
                 <h2>Get <span className="text-cyan">started with</span> Wedakam</h2>
                 <p>Integrate our precision machine learning models into your clinical workflow. Secure, fast, and reliable diagnostic assistance tailored for modern healthcare providers.</p>
-                <Link to="/register" className="pill-btn btn-cyan">Let's Get Started</Link>
+                <button className="pill-btn btn-cyan">Lets Get Started</button>
             </div>
 
             <footer className="footer container">

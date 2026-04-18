@@ -8,9 +8,12 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
+import logging
 from app.config import settings
 from app.db.session import get_db
 from app.models.doctor import Doctor
+
+logger = logging.getLogger(__name__)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -58,11 +61,14 @@ def get_current_doctor(credentials: HTTPAuthorizationCredentials = Depends(secur
         payload = jwt.decode(credentials.credentials, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         doctor_id: Optional[str] = payload.get("sub")
         if doctor_id is None:
+            logger.warning("Auth failure: 'sub' claim missing in JWT")
             raise credentials_exception
-    except JWTError:
+    except JWTError as e:
+        logger.warning(f"Auth failure: JWT decode error: {e}")
         raise credentials_exception
     
     doctor = db.query(Doctor).filter(Doctor.id == int(doctor_id)).first()
     if doctor is None:
+        logger.warning(f"Auth failure: Doctor ID {doctor_id} not found in database")
         raise credentials_exception
     return doctor

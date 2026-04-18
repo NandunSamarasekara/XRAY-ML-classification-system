@@ -13,11 +13,12 @@ import {
     LogOut
 } from 'lucide-react';
 import './Dashboard.css'; // Use dashboard styles for sidebar/topbar
-import './AccountSettings.css';
+import './AccountOwnership.css';
 
-const AccountSettings = () => {
+const AccountOwnership = () => {
     const navigate = useNavigate();
     const [doctor, setDoctor] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -36,12 +37,41 @@ const AccountSettings = () => {
         navigate('/login');
     };
 
-    const handleSettingsClick = () => {
-        navigate('/account-settings');
+    const handleDeleteAccount = () => {
+        setShowDeleteModal(true);
     };
 
-    const handleAccountOwnershipClick = () => {
-        navigate('/account-ownership');
+    const confirmDeleteAccount = async () => {
+        try {
+            const token = localStorage.getItem('access_token');
+
+            const response = await fetch('http://localhost:8000/auth/delete_account', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                // Clear local storage and redirect to login
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('doctor');
+                alert('Your account has been successfully deleted.');
+                navigate('/login');
+            } else {
+                const data = await response.json();
+                alert(data.detail || 'Failed to delete account. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            alert('An error occurred while deleting your account. Please try again.');
+        }
+        setShowDeleteModal(false);
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
     };
 
     if (!doctor) return null;
@@ -70,13 +100,13 @@ const AccountSettings = () => {
                     </a>
 
                     <p className="sidebar-section-label">OTHERS</p>
-                    <a href="/account-settings" className="sidebar-link active">
+                    <a href="/account-settings" className="sidebar-link">
                         <span className="sidebar-icon"><Settings size={18} /></span> Settings
                     </a>
                     <a href="#" className="sidebar-link">
                         <span className="sidebar-icon"><CreditCard size={18} /></span> Payment
                     </a>
-                    <a href="#" className="sidebar-link">
+                    <a href="#" className="sidebar-link active">
                         <span className="sidebar-icon"><UserCircle size={18} /></span> Accounts
                     </a>
                     <a href="#" className="sidebar-link">
@@ -110,49 +140,63 @@ const AccountSettings = () => {
 
                 {/* Page body */}
                 <main className="dashboard-content">
-                    <h1 className="dashboard-title">Account Settings</h1>
+                    <h1 className="dashboard-title">Account Ownership</h1>
 
-                    <div className="settings-container">
-                        <div className="settings-card">
-                            <h3>Profile Information</h3>
-                            <div className="profile-info">
-                                <p><strong>Name:</strong> {doctor.first_name} {doctor.last_name}</p>
-                                <p><strong>Username:</strong> {doctor.username}</p>
+                    <div className="ownership-container">
+                        <div className="ownership-card">
+                            <h3>Account Details</h3>
+                            <div className="account-details">
+                                <p><strong>Account Owner:</strong> {doctor.first_name} {doctor.last_name}</p>
                                 <p><strong>Email:</strong> {doctor.email}</p>
-                                <p><strong>Phone:</strong> {doctor.phone_no}</p>
-                                <p><strong>Qualification:</strong> {doctor.qualification}</p>
+                                <p><strong>Account Created:</strong> {doctor.created_at ? new Date(doctor.created_at).toLocaleDateString() : 'N/A'}</p>
+                                <p><strong>Account Status:</strong> Active</p>
                             </div>
                         </div>
 
-                        <div className="settings-card">
-                            <h3>Account Management</h3>
-                            <div className="account-actions">
-                                <button
-                                    className="account-ownership-btn"
-                                    onClick={handleAccountOwnershipClick}
-                                >
-                                    Account Ownership
-                                </button>
+                        <div className="ownership-card">
+                            <h3>Account Security</h3>
+                            <div className="security-actions">
+                                <button className="security-btn">Change Password</button>
+                                <button className="security-btn">Two-Factor Authentication</button>
+                            </div>
+                        </div>
 
-                                <div className="danger-zone">
-                                    <h4>Danger Zone</h4>
-                                    <button
-                                        className="delete-account-btn"
-                                        onClick={() => navigate('/account-ownership')} // Navigate to account ownership where delete option will be
-                                    >
-                                        Delete Account
-                                    </button>
-                                    <p className="warning-text">
-                                        Warning: This action cannot be undone. Your account and all associated data will be permanently deleted.
-                                    </p>
-                                </div>
+                        <div className="ownership-card danger-card">
+                            <h3>Danger Zone</h3>
+                            <div className="danger-actions">
+                                <p className="warning-text">
+                                    Warning: Deleting your account will permanently remove all your data and cannot be undone.
+                                </p>
+                                <button
+                                    className="delete-account-btn"
+                                    onClick={handleDeleteAccount}
+                                >
+                                    Delete Account
+                                </button>
                             </div>
                         </div>
                     </div>
                 </main>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Confirm Account Deletion</h3>
+                        <p>Are you sure you want to delete your account?</p>
+                        <p className="modal-warning">
+                            This action cannot be undone. All your data will be permanently deleted.
+                        </p>
+                        <div className="modal-buttons">
+                            <button className="btn-cancel" onClick={cancelDelete}>Cancel</button>
+                            <button className="btn-delete-confirm" onClick={confirmDeleteAccount}>Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
-export default AccountSettings;
+export default AccountOwnership;

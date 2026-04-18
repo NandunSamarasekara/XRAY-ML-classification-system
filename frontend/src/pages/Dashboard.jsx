@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     Users,
@@ -68,8 +68,8 @@ const Dashboard = () => {
                     <a href="#" className="sidebar-link">
                         <span className="sidebar-icon"><Users size={18} /></span> Manage Patients
                     </a>
-                    <a href="#" className="sidebar-link">
-                        <span className="sidebar-icon"><ClipboardCheck size={18} /></span> Review
+                    <a href="/reviews" className="sidebar-link">
+                        <span className="sidebar-icon"><ClipboardCheck size={18} /></span> Service Review
                     </a>
 
                     <p className="sidebar-section-label">OTHERS</p>
@@ -103,7 +103,7 @@ const Dashboard = () => {
                         </button>
                         <div className="dashboard-avatar-container">
                             <span className="dashboard-greeting">Hello, Dr. {doctor.first_name}</span>
-                            <Link to="/dashboard" className="dashboard-avatar" style={{ textDecoration: 'none' }}>{doctor.first_name.charAt(0)}</Link>
+                            <div className="dashboard-avatar">{doctor.first_name.charAt(0)}</div>
                         </div>
                         <button className="dashboard-logout-btn" onClick={handleLogout}>
                             <LogOut size={16} />

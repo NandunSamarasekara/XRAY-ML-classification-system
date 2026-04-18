@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
 import { Eye, EyeOff } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = '/api';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -28,11 +28,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        if (form.password.length < 8) {
-            setError('Password must be at least 8 characters long.');
-            setLoading(false);
-            return;
-        }
+        setError('');
 
         try {
             const res = await fetch(`${API_BASE}/auth/register`, {
@@ -143,11 +139,10 @@ const Register = () => {
                             type={showPassword ? 'text' : 'password'}
                             name="password"
                             className="auth-input pr-10"
-                            placeholder="Password (minimum 8 characters)"
+                            placeholder="Password"
                             value={form.password}
                             onChange={handleChange}
                             required
-                            minLength="8"
                         />
                         <button
                             type="button"

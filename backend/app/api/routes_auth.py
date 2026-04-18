@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models.doctor import Doctor
-from app.schemas.doctor import DoctorCreate, DoctorLogin, DoctorOut, Token, DoctorUpdate
+from app.schemas.doctor import DoctorCreate, DoctorLogin, DoctorOut, Token
 from app.core.security import hash_password, verify_password, create_access_token
 from app.core.security import get_current_doctor
 
@@ -88,28 +88,3 @@ def delete_account(db: Session = Depends(get_db), current_doctor: Doctor = Depen
     db.commit()
     
     return {"detail": "Account deleted successfully"}
-
-
-@router.patch("/update-profile", response_model=DoctorOut)
-def update_profile(
-    payload: DoctorUpdate,
-    db: Session = Depends(get_db),
-    current_doctor: Doctor = Depends(get_current_doctor)
-):
-    # Update fields if provided in partial payload
-    if payload.first_name is not None:
-        current_doctor.first_name = payload.first_name
-    if payload.last_name is not None:
-        current_doctor.last_name = payload.last_name
-    if payload.phone_no is not None:
-        current_doctor.phone_no = payload.phone_no
-    if payload.qualification is not None:
-        current_doctor.qualification = payload.qualification
-    
-    # Handle password change separately
-    if payload.password is not None and payload.password != "":
-        current_doctor.hashed_password = hash_password(payload.password)
-        
-    db.commit()
-    db.refresh(current_doctor)
-    return current_doctor

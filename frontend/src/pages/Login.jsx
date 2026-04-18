@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
 import { Eye, EyeOff } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = '/api';
 
 const Login = () => {
     const navigate = useNavigate();
