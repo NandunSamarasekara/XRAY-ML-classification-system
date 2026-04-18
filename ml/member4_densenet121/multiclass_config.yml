@@ -1,0 +1,26 @@
+seed: 42
+
+data:
+  train_csv: "C:/Users/ASUS/PycharmProjects/Wedakam/ml/member4_densenet121/processed/train.csv"
+  val_csv: "C:/Users/ASUS/PycharmProjects/Wedakam/ml/member4_densenet121/processed/val.csv"
+  test_csv: "C:/Users/ASUS/PycharmProjects/Wedakam/ml/member4_densenet121/processed/test.csv"
+  image_root: "C:/Users/ASUS/PycharmProjects/Wedakam/data/raw"
+  image_col: "Image Index"
+  label_col: "label"
+
+model:
+  name: "densenet121"
+  pretrained: true
+  num_classes: 13   # change this to your actual number of disease classes
+
+train:
+  epochs: 11
+  batch_size: 16
+  lr: 0.0003
+  weight_decay: 0.0001
+  num_workers: 0
+  image_size: 224
+  device: "cuda"
+  output_dir: "C:/Users/ASUS/PycharmProjects/Wedakam/ml/models/member4_densenet121"
+  early_stopping_patience: 3
+  save_best: true
