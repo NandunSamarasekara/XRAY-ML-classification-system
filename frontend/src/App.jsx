@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import AccountSettings from './pages/AccountSettings';
 import AccountOwnership from './pages/AccountOwnership';
 import Reviews from './pages/Reviews';
+import ReviewsList from './pages/ReviewsList';
 import './App.css';
 
 function MainLayout({ children }) {
@@ -38,6 +39,7 @@ function App() {
         <Route path="/account-settings" element={<AccountSettings />} />
         <Route path="/account-ownership" element={<AccountOwnership />} />
         <Route path="/reviews" element={<Reviews />} />
+        <Route path="/reviews" element={<ReviewsList />} />
       </Routes>
     </Router>
   );

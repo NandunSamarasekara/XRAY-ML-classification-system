@@ -2,10 +2,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from pathlib import Path
 
-# ==========================================
-# PATHS
-# ==========================================
-
 BASE_PATH = Path(r"E:\Medicine\XRAY-decease-classification\XRAY-ML-system")
 
 INPUT_CSV = BASE_PATH / "data" / "processed" / "multi" / "(04)CNN_ready_multiclass.csv"

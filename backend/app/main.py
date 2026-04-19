@@ -7,6 +7,7 @@ import time
 from app.db import init_db
 from app.api import routes_auth
 from app.api import routes_review
+from app.api import routes_auth, routes_review
 
 
 @asynccontextmanager
