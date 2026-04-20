@@ -1,35 +1,33 @@
 :root {
-  /* Core Color Palette (Light Theme Template) */
-  --bg-color: #f8fbfc;
-  /* Very light cyan/white */
-  --bg-gradient: linear-gradient(135deg, #ffffff, #f0f7f9);
+  /* Core Color Palette - Premium Medical Theme */
+  --bg-color: #fcfdfe;
+  --bg-gradient: linear-gradient(135deg, #ffffff, #f4f9fb);
 
-  --primary-text: #233348;
-  /* Dark Blue */
-  --secondary-text: #8a95ad;
-  /* Subdued Grey/Blue */
+  --primary-text: #1a2b3c; /* Deep Charcoal Blue */
+  --secondary-text: #6b7c93; /* Smooth Slate Grey */
+  --muted-text: #a0aec0;
 
-  --brand-cyan: #26c0cd;
-  /* Teal/Cyan */
-  --brand-cyan-hover: #1eabc7;
-
-  --brand-blue: #1b84c6;
+  --brand-cyan: #29c1d1;
+  --brand-cyan-hover: #1eacc7;
+  --brand-blue: #1e8ecd;
+  --brand-gradient: linear-gradient(135deg, #29c1d1, #1e8ecd);
 
   --card-bg: #ffffff;
   --surface-color: #ffffff;
-  --border-color: rgba(35, 51, 72, 0.08);
+  --border-color: rgba(35, 51, 72, 0.06);
 
   /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Shadows */
-  --shadow-sm: 0 4px 15px rgba(35, 51, 72, 0.05);
-  --shadow-md: 0 10px 30px rgba(35, 51, 72, 0.08);
-  --shadow-lg: 0 20px 40px rgba(38, 192, 205, 0.15);
+  /* Shadows - Subtle & Premium */
+  --shadow-sm: 0 4px 12px rgba(35, 51, 72, 0.03);
+  --shadow-md: 0 12px 30px rgba(35, 51, 72, 0.06);
+  --shadow-lg: 0 24px 50px rgba(38, 192, 205, 0.12);
+  --shadow-hover: 0 15px 35px rgba(38, 192, 205, 0.18);
 
   /* Transitions */
   --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
