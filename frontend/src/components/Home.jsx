@@ -1,9 +1,43 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../App.css';
 import Footer from './Footer';
 
 const Home = () => {
+    const [reviews, setReviews] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchFeatured = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/reviews/featured');
+                const data = await response.json();
+                setReviews(data);
+            } catch (err) {
+                console.error('Error fetching featured reviews:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchFeatured();
+    }, []);
+
+    const nextReview = () => {
+        if (reviews.length > 0) {
+            setCurrentIndex((prev) => (prev + 1) % reviews.length);
+        }
+    };
+
+    const prevReview = () => {
+        if (reviews.length > 0) {
+            setCurrentIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
+        }
+    };
+
+    const currentReview = reviews[currentIndex];
     return (
         <div className="home-container">
             {/* Hero Section */}
@@ -98,6 +132,13 @@ const Home = () => {
                         <h3>X-Ray Analysis</h3>
                         <p>Just upload an image of the XRAY. Heavily trained Machine Learning model will classify the XRAY and provide you with the proper diagnosis.</p>
                     </div>
+                ) : (
+                    <div className="doctors-layout">
+                        <div className="doctor-info-card">
+                            <h4>Cardiologist</h4>
+                            <h3>Dr. James<br />Wellington</h3>
+                            <a href="#readmore">Read More &rarr;</a>
+                        </div>
 
                     <div className="category-item">
                         <div className="category-icon-circle">🏥</div>

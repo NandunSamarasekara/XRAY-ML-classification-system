@@ -1,0 +1,137 @@
+.reviews-page {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+.reviews-header {
+    padding: 80px 0 40px;
+    text-align: center;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #22d3ee;
+}
+
+.reviews-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.reviews-container {
+    max-width: 1200px;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+.public-review-card {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.public-review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.review-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.doctor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #0d9488;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.doctor-meta h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.doctor-meta p {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.review-type-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+
+.review-stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.review-content {
+    color: #475569;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    position: relative;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.quote-icon {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+    margin-top: 4px;
+    color: #22d3ee;
+    opacity: 0.5;
+}
+
+.review-date {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-align: right;
+}
+
+.loading-state, .empty-state {
+    text-align: center;
+    padding: 100px 0;
+    color: #64748b;
+    font-size: 1.2rem;
+    font-weight: 500;
+}

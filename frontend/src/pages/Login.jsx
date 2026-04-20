@@ -121,21 +121,6 @@ const Login = () => {
                         {loading ? 'Signing in…' : 'Sign In'}
                     </button>
                 </form>
-
-                <div className="auth-divider">
-                    <span>or</span>
-                </div>
-
-                <div className="social-login-grid">
-                    <button type="button" className="social-btn">
-                        <img src="https://www.google.com/favicon.ico" alt="Google" className="social-icon" />
-                        Google
-                    </button>
-                    <button type="button" className="social-btn">
-                        <span className="social-icon facebook-icon">f</span>
-                        Facebook
-                    </button>
-                </div>
             </div>
         </AuthLayout>
     );

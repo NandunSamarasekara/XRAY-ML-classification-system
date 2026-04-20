@@ -11,6 +11,7 @@ class DoctorCreate(BaseModel):
     phone_no: str
     qualification: str
     password: str = Field(..., min_length=8)
+    otp_code: str = Field(..., min_length=6, max_length=6)
 
 
 class DoctorUpdate(BaseModel):

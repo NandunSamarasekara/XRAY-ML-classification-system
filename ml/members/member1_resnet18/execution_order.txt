@@ -1,0 +1,13 @@
+Execution order
+    Phase 1: Data Preparation
+        step_00_cleaning_corrupted.py
+        step_01_train_test_val.py
+        step_02_label_encoding.py
+        step_06_validity_checks.py
+
+    Phase 2: Training Setup & Execution
+        step_05_train_model.py
+
+    Phase 3: Analysis & Testing
+        step_08_visualiaztion.py
+        step_09_evaluation.py

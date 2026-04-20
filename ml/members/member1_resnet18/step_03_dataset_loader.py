@@ -7,9 +7,7 @@ from pathlib import Path
 import os
 import json
 
-
 BASE_PATH = Path(r"E:\Medicine\XRAY-decease-classification\XRAY-ML-system")
-
 DATA_DIR = BASE_PATH / "ml" / "members" / "member1_resnet18" / "processed"
 
 TRAIN_CSV = DATA_DIR / "train.csv"
@@ -17,32 +15,37 @@ VAL_CSV = DATA_DIR / "val.csv"
 TEST_CSV = DATA_DIR / "test.csv"
 
 RAW_IMAGES_BASE = BASE_PATH / "data" / "raw"
-
 OUTPUT_LABEL_MAP = BASE_PATH / "ml" / "members" / "member1_resnet18" / "label_map.json"
 
-#Loading label map
+# Loading label map
 with open(OUTPUT_LABEL_MAP, "r") as f:
     label_map = json.load(f)
 
+# --- NEW: Standard ImageNet Normalization ---
+# This ensures the validation data "looks" like the training data to the model
+normalize = transforms.Normalize(
+    mean=[0.485, 0.456, 0.406],
+    std=[0.229, 0.224, 0.225]
+)
 
-#Transforming
+# Transforming
 train_transform = transforms.Compose([
     transforms.Resize((224, 224)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(10),
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.RandomRotation(15), # Increased slightly for better variety
     transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+    transforms.ColorJitter(brightness=0.1, contrast=0.1), # Added to handle X-ray exposure variations
     transforms.ToTensor(),
+    normalize # CRITICAL: Must match validation
 ])
 
 val_test_transforms = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225])
+    normalize # CRITICAL: Ensure distribution is identical to training
 ])
 
-#Creating the custom dataset
-
+# Creating the custom dataset
 class XRayDataset(Dataset):
     def __init__(self, csv_file, image_base, transform=None):
         self.df = pd.read_csv(csv_file)
@@ -64,7 +67,8 @@ class XRayDataset(Dataset):
                     found = True
                     break
             if not found:
-                raise FileNotFoundError(f"Image not found: {img_name}")
+                # Silently log or skip instead of raising error if some images were deleted in step_00
+                continue
 
     def __len__(self):
         return len(self.image_paths)
@@ -75,7 +79,7 @@ class XRayDataset(Dataset):
         try:
             image = Image.open(img_path).convert("RGB")
         except Exception as e:
-            print(f"Skipping corrupted image: {img_path}")
+            # If an image is corrupted, try the next one
             return self.__getitem__((idx + 1) % len(self.image_paths))
 
         if self.transform:
@@ -83,9 +87,8 @@ class XRayDataset(Dataset):
 
         return image, torch.tensor(label, dtype=torch.long)
 
-#Loading the data
-
-def get_dataloaders(batch_size=32, num_workers=4):
+# Loading the data
+def get_dataloaders(batch_size=32, num_workers=0): # num_workers=0 is safer for Windows stability
     train_dataset = XRayDataset(TRAIN_CSV, RAW_IMAGES_BASE, transform=train_transform)
     val_dataset   = XRayDataset(VAL_CSV, RAW_IMAGES_BASE, transform=val_test_transforms)
     test_dataset  = XRayDataset(TEST_CSV, RAW_IMAGES_BASE, transform=val_test_transforms)

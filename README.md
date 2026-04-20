@@ -153,6 +153,22 @@ Frontend:
 cd frontend
 npm run dev
 
+## Testing
+
+### Backend Testing
+
+```bash
+cd backend
+$env:PYTHONPATH="."; pytest tests/test_auth.py
+```
+
+### Frontend Testing
+
+```bash
+cd frontend
+npm test -- --run --environment jsdom --root src/pages/__tests__/AccountSettings.test.jsx
+```
+
 ## Branching Strategy
 
 - `main` – Production / Stable branch (protected)  

@@ -6,13 +6,69 @@ from app.models.doctor import Doctor
 from app.schemas.doctor import DoctorCreate, DoctorLogin, DoctorOut, Token, DoctorUpdate
 from app.core.security import hash_password, verify_password, create_access_token
 from app.core.security import get_current_doctor
+from app.models.otp import UserOTP
+from app.core.email import send_otp_email
+import random
+import datetime
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
+@router.post("/send-otp", status_code=status.HTTP_200_OK)
+def send_otp(payload: dict, db: Session = Depends(get_db)):
+    email = payload.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+    
+    # Check if user already exists
+    existing = db.query(Doctor).filter(Doctor.email == email).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Generate 6-digit OTP
+    otp_code = str(random.randint(100000, 999999))
+    
+    # Set expiration
+    from app.config import settings
+    expires_at = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=settings.OTP_EXPIRE_MINUTES)
+    
+    # Store or update OTP
+    db_otp = db.query(UserOTP).filter(UserOTP.email == email).first()
+    if db_otp:
+        db_otp.otp_code = otp_code
+        db_otp.expires_at = expires_at
+    else:
+        new_otp = UserOTP(email=email, otp_code=otp_code, expires_at=expires_at)
+        db.add(new_otp)
+    
+    db.commit()
+    
+    # Send email
+    if send_otp_email(email, otp_code):
+        return {"detail": "OTP sent successfully"}
+    else:
+        # Fallback: Print OTP to terminal for testing/debugging
+        print(f"\n[TESTING FALLBACK] OTP for {email}: {otp_code}\n")
+        return {"detail": "Email service failed, but OTP was generated (check terminal for TESTING FALLBACK)"}
+
+
 @router.post("/register", response_model=DoctorOut, status_code=status.HTTP_201_CREATED)
 def register(payload: DoctorCreate, db: Session = Depends(get_db)):
-    # 1. Check if email already taken
+    # 1. Verify OTP
+    db_otp = db.query(UserOTP).filter(UserOTP.email == payload.email).first()
+    if not db_otp or db_otp.otp_code != payload.otp_code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid OTP code",
+        )
+    
+    if db_otp.is_expired():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="OTP code has expired",
+        )
+
+    # 2. Check if email already taken
     existing = db.query(Doctor).filter(Doctor.email == payload.email).first()
     if existing:
         raise HTTPException(
@@ -38,6 +94,8 @@ def register(payload: DoctorCreate, db: Session = Depends(get_db)):
 
     # 4. Generate username = FirstnameLastnameID   (e.g. "JohnDoe42")
     doctor.username = f"{payload.first_name}{payload.last_name}{doctor.id}"
+    # 5. Delete OTP record after successful registration
+    db.delete(db_otp)
     db.commit()
     db.refresh(doctor)
 
