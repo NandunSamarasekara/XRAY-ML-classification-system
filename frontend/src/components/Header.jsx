@@ -12,15 +12,16 @@ const Header = () => {
         </div>
 
         <nav className="nav-links">
-          <a href="/" className="nav-link">Home</a>
-          <a href="#services" className="nav-link">Services</a>
-          <a href="#product" className="nav-link">Product</a>
-          <a href="#about" className="nav-link">About Us</a>
+          <Link to="/" className="nav-link">Home</Link>
+          <a href="/#services" className="nav-link">Services</a>
+          <a href="/#product" className="nav-link">Product</a>
+          <Link to="/dashboard?view=review" className="nav-link">Review</Link>
+          <a href="/#about" className="nav-link">About Us</a>
         </nav>
 
         <div className="header-actions">
-          <Link to="/register" className="pill-btn btn-cyan" style={{ padding: '0.6rem 1.5rem' }}>Register</Link>
-          <Link to="/login" className="pill-btn btn-cyan" style={{ padding: '0.6rem 1.5rem' }}>Log in</Link>
+          <Link to="/register" className="pill-btn btn-cyan">Register</Link>
+          <Link to="/login" className="pill-btn btn-outline">Log in</Link>
         </div>
       </div>
     </header>

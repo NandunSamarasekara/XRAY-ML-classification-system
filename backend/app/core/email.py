@@ -7,7 +7,7 @@ from email.mime.image import MIMEImage
 from app.config import settings
 
 
-def send_otp_email(to_email: str, otp: str, patient_name: str) -> None:
+def send_otp_email(to_email: str, otp: str, patient_name: str = "Doctor") -> bool:
     sender_email = settings.MAIL_USERNAME
     sender_password = settings.MAIL_PASSWORD
     mail_server = settings.MAIL_SERVER
@@ -17,7 +17,7 @@ def send_otp_email(to_email: str, otp: str, patient_name: str) -> None:
 
     if not sender_email or not sender_password:
         print(f"Warning: MAIL_USERNAME or MAIL_PASSWORD not set in .env. Skipping email. OTP={otp}")
-        return
+        return False
 
     print(f"\n==========================================")
     print(f"DEVELOPMENT OTP LOG: {otp}")
@@ -30,12 +30,12 @@ def send_otp_email(to_email: str, otp: str, patient_name: str) -> None:
     msg = EmailMessage()
     msg.set_content(
         f"Hello {patient_name},\n\n"
-        f"Your patient profile has been created in the Wedakam system.\n\n"
+        f"Your profile has been created in the Wedakam system.\n\n"
         f"Your verification code is: {otp}\n\n"
-        f"Please provide this code to your doctor to activate your profile.\n\n"
+        f"Please provide this code to activate your profile.\n\n"
         f"Thank you!"
     )
-    msg['Subject'] = "Your Wedakam Patient Profile Verification Code"
+    msg['Subject'] = "Your Wedakam Profile Verification Code"
     msg['From'] = from_address
     msg['To'] = to_email
 
@@ -45,8 +45,10 @@ def send_otp_email(to_email: str, otp: str, patient_name: str) -> None:
             server.login(sender_email, sender_password)
             server.send_message(msg)
         print(f"Successfully sent OTP email to {to_email}")
+        return True
     except Exception as e:
         print(f"Failed to send email to {to_email}: {e}")
+        return False
 
 
 def send_report_email(to_email: str, report: dict) -> None:

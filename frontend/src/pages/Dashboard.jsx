@@ -31,6 +31,13 @@ const Dashboard = () => {
             return;
         }
         setDoctor(JSON.parse(doctorData));
+
+        // Handle direct view routing from URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const viewParam = params.get('view');
+        if (viewParam === 'review') {
+            setActiveView('review');
+        }
     }, [navigate]);
 
     const handleLogout = () => {
@@ -74,7 +81,7 @@ const Dashboard = () => {
                     <a href="/reports" className="sidebar-link" onClick={(e) => { e.preventDefault(); navigate('/reports'); }}>
                         <span className="sidebar-icon"><FileText size={18} /></span> Manage Reports
                     </a>
-                    <a href="#" className="sidebar-link">
+                    <a href="#" className={`sidebar-link ${activeView === 'review' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setActiveView('review'); }}>
                         <span className="sidebar-icon"><ClipboardCheck size={18} /></span> Review
                     </a>
 
@@ -156,102 +163,75 @@ const Dashboard = () => {
                                                     <div className="result-percent" style={{ color: res.color }}>{res.percent}%</div>
                                                     <div className="result-name">{res.name}</div>
                                                 </div>
+                                                <button className="view-report-btn">View Report</button>
                                             </div>
-                                            <button className="view-report-btn">View Report</button>
-                                        </div>
-                                        <div className="records-chart-container">
-                                            {recordData.map((item, idx) => (
-                                                <div key={idx} className="bar-group">
-                                                    <div className="bar deceased" style={{ height: `${item.d}%` }}></div>
-                                                    <div className="bar normal" style={{ height: `${item.n}%` }}></div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className="chart-legend">
-                                            <div className="legend-item"><span className="legend-bullet deceased"></span> Deceased ECG</div>
-                                            <div className="legend-item"><span className="legend-bullet normal"></span> Normal ECG</div>
-                                        </div>
+                                        ))}
                                     </div>
-
-                                    {/* Tested Results and Patients Row */}
-                                    <div className="tested-results-row">
-                                        <div className="dashboard-card" style={{ flex: 1 }}>
-                                            <div className="card-header">
-                                                <div className="card-title">Tested results</div>
+                                    <div className="records-chart-container">
+                                        {recordData.map((item, idx) => (
+                                            <div key={idx} className="bar-group">
+                                                <div className="bar deceased" style={{ height: `${item.d}%` }}></div>
+                                                <div className="bar normal" style={{ height: `${item.n}%` }}></div>
                                             </div>
-                                            <div className="card-subtitle mb-4">Detected deceases by percentage</div>
-                                            <div className="tested-results-grid">
-                                                {[
-                                                    { name: 'Mass', percent: 85, color: '#8b5cf6' },
-                                                    { name: 'Pneumonia', percent: 85, color: '#f97316' },
-                                                    { name: 'Nodule', percent: 92, color: '#22d3ee' }
-                                                ].map((res, idx) => (
-                                                    <div key={idx} className="result-bubble-container">
-                                                        <svg width="100" height="100" className="circle-progress">
-                                                            <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" strokeWidth="8" />
-                                                            <circle cx="50" cy="50" r="45" fill="none" stroke={res.color} strokeWidth="8"
-                                                                strokeDasharray={`${(res.percent / 100) * 282}, 282`} />
-                                                        </svg>
-                                                        <div className="result-label">
-                                                            <div className="result-percent">{res.percent}%</div>
-                                                            <div className="result-name">{res.name}</div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="dashboard-card" style={{ flex: 1, marginLeft: '24px' }}>
-                                            <div className="card-header">
-                                                <div className="card-title">Most Recent Patients</div>
-                                            </div>
-                                            <div className="card-subtitle">Recently created patient portfolios</div>
-                                            <div className="patient-placeholder-text mt-4">None</div>
-                                        </div>
+                                        ))}
+                                    </div>
+                                    <div className="chart-legend">
+                                        <div className="legend-item"><span className="legend-bullet deceased"></span> Deceased ECG</div>
+                                        <div className="legend-item"><span className="legend-bullet normal"></span> Normal ECG</div>
                                     </div>
                                 </div>
 
-                        <div className="grid-right">
-                            {/* INFERENCE ENGINE Card */}
-                            <div className="dashboard-card mb-4">
-                                <div className="card-header">
-                                    <div className="card-title">INFERENCE ENGINE</div>
-                                    <button className="view-report-btn">View Report</button>
+                                <div className="dashboard-card" style={{ flex: 1, marginLeft: '24px' }}>
+                                    <div className="card-header">
+                                        <div className="card-title">Most Recent Patients</div>
+                                    </div>
+                                    <div className="card-subtitle">Recently created patient portfolios</div>
+                                    <div className="patient-placeholder-text mt-4">None</div>
                                 </div>
-                                <div className="card-subtitle">From 1-6 Dec, 2020</div>
-                                <div className="engine-content mt-4">
-                                    <div className="donut-chart">
-                                        <svg width="150" height="150">
-                                            <circle cx="75" cy="75" r="60" fill="none" stroke="#f1f5f9" strokeWidth="15" />
-                                            <circle cx="75" cy="75" r="60" fill="none" stroke="var(--brand-cyan)" strokeWidth="15"
-                                                strokeDasharray="150, 377" strokeDashoffset="-75" />
-                                            <circle cx="75" cy="75" r="60" fill="none" stroke="var(--brand-blue)" strokeWidth="15"
-                                                strokeDasharray="120, 377" strokeDashoffset="75" />
-                                        </svg>
-                                    </div>
-                                    <div className="accuracy-label">
-                                        <span className="legend-bullet deceased"></span>
-                                        <span className="card-subtitle">Accuracy</span>
-                                        <span className="accuracy-value">40%</span>
-                                    </div>
+                            </div>
 
-                                    {/* Recent Scans Card */}
-                                    <div className="dashboard-card">
-                                        <div className="card-header">
-                                            <div className="card-title">Recent scans</div>
-                                            <button className="view-report-btn">View Report</button>
-                                        </div>
-                                        <div className="scans-data">
-                                            <div className="scans-value">2.568</div>
-                                            <div className="scans-diff"><TrendingDown size={14} /> 2.1% vs last week</div>
-                                        </div>
-                                        <div className="card-subtitle mt-2">Scans from 1-6 Dec, 2020</div>
-                                        <div className="line-chart-placeholder">
-                                            {/* Simplified SVG line chart */}
-                                            <svg width="100%" height="100" viewBox="0 0 100 40" preserveAspectRatio="none">
-                                                <path d="M0,35 Q20,30 40,32 T80,10 T100,5" fill="none" stroke="#22d3ee" strokeWidth="2" />
-                                                <path d="M0,30 Q25,20 50,25 T100,20" fill="none" stroke="#e2e8f0" strokeWidth="2" />
+                            <div className="grid-right">
+                                {/* INFERENCE ENGINE Card */}
+                                <div className="dashboard-card mb-4">
+                                    <div className="card-header">
+                                        <div className="card-title">INFERENCE ENGINE</div>
+                                        <button className="view-report-btn">View Report</button>
+                                    </div>
+                                    <div className="card-subtitle">From 1-6 Dec, 2020</div>
+                                    <div className="engine-content mt-4">
+                                        <div className="donut-chart">
+                                            <svg width="150" height="150">
+                                                <circle cx="75" cy="75" r="60" fill="none" stroke="#f1f5f9" strokeWidth="15" />
+                                                <circle cx="75" cy="75" r="60" fill="none" stroke="var(--brand-cyan)" strokeWidth="15"
+                                                    strokeDasharray="150, 377" strokeDashoffset="-75" />
+                                                <circle cx="75" cy="75" r="60" fill="none" stroke="var(--brand-blue)" strokeWidth="15"
+                                                    strokeDasharray="120, 377" strokeDashoffset="75" />
                                             </svg>
+                                        </div>
+                                        <div className="accuracy-label">
+                                            <span className="legend-bullet deceased"></span>
+                                            <span className="card-subtitle">Accuracy</span>
+                                            <span className="accuracy-value">40%</span>
+                                        </div>
+
+                                        {/* Recent Scans Card */}
+                                        <div className="dashboard-card">
+                                            <div className="card-header">
+                                                <div className="card-title">Recent scans</div>
+                                                <button className="view-report-btn">View Report</button>
+                                            </div>
+                                            <div className="scans-data">
+                                                <div className="scans-value">2.568</div>
+                                                <div className="scans-diff"><TrendingDown size={14} /> 2.1% vs last week</div>
+                                            </div>
+                                            <div className="card-subtitle mt-2">Scans from 1-6 Dec, 2020</div>
+                                            <div className="line-chart-placeholder">
+                                                {/* Simplified SVG line chart */}
+                                                <svg width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                                    <path d="M0,35 Q20,30 40,32 T80,10 T100,5" fill="none" stroke="#22d3ee" strokeWidth="2" />
+                                                    <path d="M0,30 Q25,20 50,25 T100,20" fill="none" stroke="#e2e8f0" strokeWidth="2" />
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

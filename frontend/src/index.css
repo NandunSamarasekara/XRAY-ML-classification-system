@@ -111,8 +111,10 @@ p {
 }
 
 .pill-btn {
-  display: inline-block;
-  padding: 0.75rem 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.6rem;
   border-radius: 50px;
   font-weight: 600;
   font-size: 0.95rem;
@@ -120,17 +122,34 @@ p {
   transition: var(--transition-fast);
   text-align: center;
   border: none;
+  white-space: nowrap;
 }
 
 .btn-cyan {
   background: linear-gradient(135deg, var(--brand-cyan), var(--brand-blue));
   color: white;
-  box-shadow: 0 6px 15px rgba(38, 192, 205, 0.3);
+  box-shadow: 0 6px 15px rgba(38, 192, 205, 0.25);
+  border: 1px solid transparent;
 }
 
 .btn-cyan:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(38, 192, 205, 0.4);
+  box-shadow: 0 8px 22px rgba(38, 192, 205, 0.35);
+}
+
+.btn-outline {
+  background: white;
+  color: var(--brand-cyan);
+  border: 1px solid var(--brand-cyan);
+  box-shadow: 0 4px 10px rgba(38, 192, 205, 0.1);
+}
+
+.btn-outline:hover {
+  transform: translateY(-2px);
+  background: #fdfefe;
+  box-shadow: 0 6px 15px rgba(38, 192, 205, 0.15);
+  border-color: var(--brand-cyan-hover);
+  color: var(--brand-cyan-hover);
 }
 
 .btn-transparent {

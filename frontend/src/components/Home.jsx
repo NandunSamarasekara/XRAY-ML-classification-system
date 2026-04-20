@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Activity, ShieldCheck, Microscope, Monitor, MessageSquare, HeartPulse, Building2, ChevronRight, Star } from 'lucide-react';
 import '../App.css';
 import Footer from './Footer';
 
@@ -11,33 +11,32 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchFeatured = async () => {
+        const fetchReviews = async () => {
             try {
                 const response = await fetch('http://127.0.0.1:8000/reviews/featured');
-                const data = await response.json();
-                setReviews(data);
+                if (response.ok) {
+                    const data = await response.json();
+                    setReviews(data);
+                }
             } catch (err) {
-                console.error('Error fetching featured reviews:', err);
+                console.error('Error fetching reviews:', err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchFeatured();
+        fetchReviews();
     }, []);
 
-    const nextReview = () => {
-        if (reviews.length > 0) {
-            setCurrentIndex((prev) => (prev + 1) % reviews.length);
+    // Auto-advance reviews
+    useEffect(() => {
+        if (reviews.length > 1) {
+            const timer = setInterval(() => {
+                setCurrentIndex((prev) => (prev + 1) % reviews.length);
+            }, 6000);
+            return () => clearInterval(timer);
         }
-    };
+    }, [reviews]);
 
-    const prevReview = () => {
-        if (reviews.length > 0) {
-            setCurrentIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
-        }
-    };
-
-    const currentReview = reviews[currentIndex];
     return (
         <div className="home-container">
             {/* Hero Section */}
@@ -56,7 +55,7 @@ const Home = () => {
 
                 <div className="hero-visual">
                     <div className="hero-bg-arch"></div>
-                    <div className="hero-arch-image arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
+                    <div className="hero-arch-image arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
                     </div>
                 </div>
             </section>
@@ -72,13 +71,11 @@ const Home = () => {
                 </div>
             </section>
 
-            <Footer />
-
             {/* Special Services Section */}
             <section className="special-services-section container" id="services">
                 <div className="special-services-layout">
                     <div className="special-visual-container">
-                        <div className="special-image-arch arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
+                        <div className="special-image-arch arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1589254065878-42c9da997008?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
                         </div>
                     </div>
 
@@ -100,12 +97,12 @@ const Home = () => {
                                 <p>Automated detection of 12 diseases including pneumonia, pneumothorax, and cardiomegaly on standard PA films.</p>
                             </div>
                             <div className="special-service-card">
-                                <div className="special-icon-box">🔧</div>
+                                <div className="special-icon-box"><Activity size={24} /></div>
                                 <h3>Fracture Detection</h3>
                                 <p>Pinpoint hairline fractures and skeletal abnormalities with high precision algorithms.</p>
                             </div>
                             <div className="special-service-card">
-                                <div className="special-icon-box">📱</div>
+                                <div className="special-icon-box"><Monitor size={24} /></div>
                                 <h3>DICOM Viewer</h3>
                                 <p>Integrated Web viewer for immediate manipulation and assessment of medical imaging data.</p>
                             </div>
@@ -122,44 +119,68 @@ const Home = () => {
 
                 <div className="categories-layout">
                     <div className="category-item">
-                        <div className="category-icon-circle">💬</div>
+                        <div className="category-icon-circle"><MessageSquare size={32} className="text-cyan" /></div>
                         <h3>Interact with the patient</h3>
                         <p>Interact with the patient and get the proper diagnosis. You can send the medical reports using the system.</p>
                     </div>
 
                     <div className="category-item highlight">
-                        <div className="category-icon-circle accent">🧬</div>
+                        <div className="category-icon-circle accent"><Microscope size={32} /></div>
                         <h3>X-Ray Analysis</h3>
                         <p>Just upload an image of the XRAY. Heavily trained Machine Learning model will classify the XRAY and provide you with the proper diagnosis.</p>
                     </div>
-                ) : (
-                    <div className="doctors-layout">
-                        <div className="doctor-info-card">
-                            <h4>Cardiologist</h4>
-                            <h3>Dr. James<br />Wellington</h3>
-                            <a href="#readmore">Read More &rarr;</a>
-                        </div>
-
+                    
                     <div className="category-item">
-                        <div className="category-icon-circle">🏥</div>
+                        <div className="category-icon-circle"><Building2 size={32} className="text-cyan" /></div>
                         <h3>Clinical Integration</h3>
                         <p>Get priority APIs in hospitals with Wedakam. Which allows you to integrate your local hospital's PACS practically and save time.</p>
                     </div>
                 </div>
             </section>
 
-            {/* Testimonial Section */}
+            {/* Dynamic Testimonials Section */}
             <section className="testimonial-section container" id="about">
-                <div className="testimonial-layout">
-                    <div className="testimonial-info-box">
-                        <p className="box-tag">Cardiologist</p>
-                        <h3>Dr. James Wellington</h3>
-                        <a href="#readmore" className="read-more-link">Read More &rarr;</a>
+                {loading ? (
+                    <div className="loading-placeholder">Loading reviews...</div>
+                ) : reviews.length > 0 ? (
+                    <div className="testimonial-layout">
+                        <div className="testimonial-info-box">
+                            <p className="box-tag">{reviews[currentIndex].doctor.qualification}</p>
+                            <h3>Dr. {reviews[currentIndex].doctor.first_name} {reviews[currentIndex].doctor.last_name}</h3>
+                            <div className="testimonial-rating mb-3">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                    <Star 
+                                        key={s} 
+                                        size={16} 
+                                        fill={s <= reviews[currentIndex].rating ? "#fff" : "none"} 
+                                        color="#fff" 
+                                        style={{ marginRight: '4px' }}
+                                    />
+                                ))}
+                            </div>
+                            <p className="testimonial-quote mb-4">
+                                "{reviews[currentIndex].review_text}"
+                            </p>
+                            <Link to="/dashboard?view=review" className="read-more-link">Share Your Review <ChevronRight size={16} /></Link>
+                        </div>
+                        <div className="testimonial-image-arch arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
+                        </div>
                     </div>
-                    <div className="testimonial-image-arch arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
+                ) : (
+                    <div className="testimonial-layout">
+                        <div className="testimonial-info-box">
+                            <p className="box-tag">Specialist</p>
+                            <h3>Join our community</h3>
+                            <p className="mb-4">Be the first to share your experience with Wedakam and help other doctors improve their diagnostic workflow.</p>
+                            <Link to="/dashboard?view=review" className="read-more-link">Share Your Review <ChevronRight size={16} /></Link>
+                        </div>
+                        <div className="testimonial-image-arch arch-shape" style={{ background: 'url(https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80) no-repeat center center', backgroundSize: 'cover' }}>
+                        </div>
                     </div>
-                </div>
+                )}
             </section>
+
+            <Footer />
         </div>
     );
 };

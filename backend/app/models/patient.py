@@ -26,4 +26,3 @@ class PatientPortfolio(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     doctor = relationship("Doctor", back_populates="patient_portfolios")
-    reviews = relationship("Review", back_populates="patient")

@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.db import init_db
-from app.api import routes_auth, routes_patient, routes_xray, routes_comparison, routes_report
+from .db import init_db
+from .api import routes_auth, routes_patient, routes_xray, routes_comparison, routes_report, routes_review
 
 
 @asynccontextmanager
@@ -37,6 +37,7 @@ app.include_router(routes_patient.router)
 app.include_router(routes_xray.router)
 app.include_router(routes_comparison.router)
 app.include_router(routes_report.router)
+app.include_router(routes_review.router)
 
 
 @app.get("/")
