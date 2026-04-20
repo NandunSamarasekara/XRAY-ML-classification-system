@@ -24,9 +24,9 @@ def main():
     print("Max images:", class_counts.max())
 
     if class_counts.min() == class_counts.max():
-        print("\n✅ Dataset is PERFECTLY BALANCED")
+        print("\nDataset is PERFECTLY BALANCED")
     else:
-        print("\n⚠️ Dataset is IMBALANCED")
+        print("\nDataset is IMBALANCED")
 
 
 if __name__ == "__main__":
