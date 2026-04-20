@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.db.session import Base
@@ -17,3 +18,6 @@ class Doctor(Base):
     qualification = Column(String(100), nullable=False)
     hashed_password = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # One doctor can write many reviews
+    reviews = relationship("Review", back_populates="doctor")

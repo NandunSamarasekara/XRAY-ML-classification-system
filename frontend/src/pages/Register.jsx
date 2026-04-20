@@ -15,19 +15,60 @@ const Register = () => {
         phone_no: '',
         qualification: '',
         password: '',
+        otp_code: '',
     });
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [otpLoading, setOtpLoading] = useState(false);
+    const [otpSent, setOtpSent] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
         setError('');
+        setSuccess('');
+    };
+
+    const handleSendOTP = async () => {
+        if (!form.email) {
+            setError('Please enter your email first.');
+            return;
+        }
+        setOtpLoading(true);
+        setError('');
+        setSuccess('');
+        try {
+            const res = await fetch(`${API_BASE}/auth/send-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: form.email }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setError(data.detail || 'Failed to send OTP.');
+            } else {
+                setOtpSent(true);
+                setSuccess(data.detail || 'OTP sent successfully!');
+            }
+        } catch (err) {
+            setError('Could not connect to the server.');
+        } finally {
+            setOtpLoading(false);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
+
+        if (!otpSent) {
+            setError('Please request and enter an OTP code.');
+            setLoading(false);
+            return;
+        }
+
         if (form.password.length < 8) {
             setError('Password must be at least 8 characters long.');
             setLoading(false);
@@ -71,9 +112,14 @@ const Register = () => {
                         {error}
                     </div>
                 )}
+                {success && (
+                    <div className="auth-success-banner" style={{ backgroundColor: '#f0fdf4', color: '#166534', padding: '12px', borderRadius: '8px', marginBottom: '16px', border: '1px solid #bbf7d0', fontSize: '0.9rem' }}>
+                        {success}
+                    </div>
+                )}
 
                 <form className="auth-form" onSubmit={handleSubmit}>
-                    <div className="form-group">
+                    <div className="form-group" style={{ display: 'flex', gap: '10px' }}>
                         <input
                             type="email"
                             name="email"
@@ -82,8 +128,43 @@ const Register = () => {
                             value={form.email}
                             onChange={handleChange}
                             required
+                            style={{ flex: 1 }}
                         />
+                        <button
+                            type="button"
+                            onClick={handleSendOTP}
+                            disabled={otpLoading}
+                            style={{
+                                padding: '0 15px',
+                                borderRadius: '8px',
+                                border: '1px solid #7c3aed',
+                                background: 'white',
+                                color: '#7c3aed',
+                                fontWeight: '600',
+                                cursor: otpLoading ? 'not-allowed' : 'pointer',
+                                fontSize: '0.85rem',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            {otpLoading ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                        </button>
                     </div>
+
+                    {otpSent && (
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                name="otp_code"
+                                className="auth-input"
+                                placeholder="Enter 6-digit OTP"
+                                value={form.otp_code}
+                                onChange={handleChange}
+                                required
+                                maxLength="6"
+                                style={{ border: '2px solid #7c3aed' }}
+                            />
+                        </div>
+                    )}
 
                     <div className="name-grid">
                         <div className="form-group">
@@ -165,21 +246,6 @@ const Register = () => {
                     >
                         {loading ? 'Creating account…' : 'Sign Up'}
                     </button>
-
-                    <div className="auth-divider mb-4">
-                        <span>or</span>
-                    </div>
-
-                    <div className="social-login-grid mb-6">
-                        <button type="button" className="social-btn">
-                            <img src="https://www.google.com/favicon.ico" alt="Google" className="social-icon" />
-                            Google
-                        </button>
-                        <button type="button" className="social-btn">
-                            <span className="social-icon facebook-icon">f</span>
-                            Facebook
-                        </button>
-                    </div>
 
                     <div className="terms-checkbox-container">
                         <input type="checkbox" id="terms" className="auth-checkbox" required />
