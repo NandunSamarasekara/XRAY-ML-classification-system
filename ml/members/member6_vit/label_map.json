@@ -1,0 +1,8 @@
+{
+    "Atelectasis": 0,
+    "Cardiomegaly": 1,
+    "Emphysema": 2,
+    "Mass": 3,
+    "Pneumonia": 4,
+    "Pneumothorax": 5
+}
