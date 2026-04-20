@@ -1,5 +1,5 @@
-from app.db.session import Base, engine
-from app.models import doctor, review  # noqa: F401 — ensures models are registered
+from app.db.session import engine
+from app.db.base import Base  # noqa: F401 — ensures models are registered
 
 
 def create_tables() -> None:

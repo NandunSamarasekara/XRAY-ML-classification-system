@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 import hashlib
+import bcrypt
 
 from jose import jwt, JWTError
-from passlib.context import CryptContext
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -12,21 +12,31 @@ from app.config import settings
 from app.db.session import get_db
 from app.models.doctor import Doctor
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 security = HTTPBearer()
 
 
 def hash_password(plain_password: str) -> str:
-    # bcrypt has a 72-byte limit. We truncate to ensure compatibility and avoid errors.
-    pw_bytes = plain_password.encode('utf-8')[:72]
-    return pwd_context.hash(pw_bytes.decode('utf-8', errors='ignore'))
+    # Truncate password to 72 bytes to comply with bcrypt limitations
+    password_bytes = plain_password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password_bytes = password_bytes[:72]
+    
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password_bytes, salt)
+    return hashed_password.decode('utf-8')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    # Truncate to match the hashing logic
-    pw_bytes = plain_password.encode('utf-8')[:72]
-    return pwd_context.verify(pw_bytes.decode('utf-8', errors='ignore'), hashed_password)
+    # Verify with truncated password to maintain consistency
+    password_bytes = plain_password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password_bytes = password_bytes[:72]
+        
+    try:
+        return bcrypt.checkpw(password_bytes, hashed_password.encode('utf-8'))
+    except ValueError:
+        return False
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

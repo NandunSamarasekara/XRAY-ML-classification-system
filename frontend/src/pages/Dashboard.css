@@ -1,12 +1,12 @@
 :root {
-    --sidebar-width: 240px;
-    --primary-teal: #0d9488;
-    --secondary-blue: #3b82f6;
-    --bg-light: #f8fafc;
-    --sidebar-bg: #f3f6ff;
-    --text-dark: #1e293b;
-    --text-muted: #64748b;
-    --card-bg: #ffffff;
+    --sidebar-width: 260px;
+    --primary-cyan: #14b8a6;
+    --secondary-blue: #0f766e;
+    --bg-light: #f4f6f8;
+    --sidebar-bg: #ffffff;
+    --text-dark: var(--primary-text);
+    --text-muted: var(--secondary-text);
+    --card-bg: var(--card-bg);
     --accent-purple: #8b5cf6;
     --accent-orange: #f97316;
 }
@@ -45,12 +45,21 @@
 }
 
 .sidebar-logo .logo-icon {
-    width: 14px;
-    height: 14px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-cyan);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sidebar-logo .logo-icon::after {
-    font-size: 12px;
+    content: '+';
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
 }
 
 .sidebar-nav {
@@ -83,14 +92,17 @@
 }
 
 .sidebar-link:hover {
-    background-color: rgba(13, 148, 136, 0.05);
-    color: var(--primary-teal);
+    background-color: rgba(41, 193, 209, 0.05);
+    color: var(--primary-cyan);
 }
 
 .sidebar-link.active {
-    background-color: #e2e8ff;
-    color: var(--text-dark);
+    background: var(--primary-cyan);
+    color: white;
     font-weight: 700;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+    border-radius: 8px;
+    margin-right: 20px;
 }
 
 .sidebar-icon {
@@ -208,7 +220,14 @@
     background: var(--card-bg);
     border-radius: 24px;
     padding: 32px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-normal);
+}
+
+.dashboard-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
 }
 
 .card-header {
@@ -274,11 +293,12 @@
 }
 
 .bar.deceased {
-    background-color: #22d3ee;
+    background-color: var(--brand-cyan);
+    box-shadow: 0 2px 8px rgba(41, 193, 209, 0.3);
 }
 
 .bar.normal {
-    background-color: #f1f5f9;
+    background-color: #e2e8f0;
 }
 
 .chart-legend {
@@ -428,11 +448,25 @@
 
 /* Welcome Summary */
 .welcome-summary {
-    background: linear-gradient(135deg, var(--primary-teal), #14b8a6);
+    background: var(--primary-cyan);
     color: white;
     border-radius: 24px;
     padding: 40px;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-summary::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
 }
 
 .welcome-summary h2 {
