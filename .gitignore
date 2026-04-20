@@ -94,3 +94,16 @@ docker/*.log
 ############################################
 .env
 .env.*
+
+############################################
+# TEMPORARY SCRIPTS & CONFIG
+############################################
+backend/patch_db.py
+backend/reset_reviews.py
+backend/run_send_otp.py
+pyrightconfig.json
+
+############################################
+# ML MODELS & WEIGHTS (Additional)
+############################################
+ml/**/models/
